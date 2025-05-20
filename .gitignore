@@ -1,5 +1,8 @@
 # Hugo specific
-public/
+public/*
+!public/img/
+public/img/*
+!public/img/stuttgart_gophers.png
 resources/_gen/
 .hugo_build.lock
 hugo_stats.json
