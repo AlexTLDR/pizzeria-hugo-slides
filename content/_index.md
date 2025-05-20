@@ -389,3 +389,120 @@ templates := map[string]*template.Template{
       </ul>
   </ul>
 </div>
+
+---
+
+# Key Features
+
+<div class="responsive-container">
+  <ul class="responsive-list">
+    <li class="fragment">Menu Management:
+      <ul>
+        <li class="fragment">CRUD operations for menu items</li>
+        <li class="fragment">Category-based organization</li>
+        <li class="fragment">Support for different pricing (regular/small sizes)</li>
+        <li class="fragment">Image upload support for menu items</li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+---
+
+# Admin Dashboard:
+
+<div class="responsive-container">
+  <ul class="responsive-list">
+      <ul>
+        <li class="fragment">Secure admin area accessible only to authorized emails</li>
+        <li class="fragment">Menu item management</li>
+        <li class="fragment">Flash message management</li>
+      </ul>
+  </ul>
+</div>
+
+---
+
+# Public Website:
+
+<div class="responsive-container">
+  <ul class="responsive-list">
+      <ul>
+        <li class="fragment">Display of menu items organized by categories</li>
+        <li class="fragment">Display of flash messages/announcements</li>
+        <li class="fragment">Responsive design using Tailwind CSS</li>
+      </ul>
+  </ul>
+</div>
+
+---
+
+# Security:
+
+<div class="responsive-container">
+  <ul class="responsive-list">
+      <ul>
+        <li class="fragment">Google OAuth for authentication</li>
+        <li class="fragment">HMAC-SHA256 signed cookies for session management</li>
+        <li class="fragment">Whitelist of allowed admin emails</li>
+      </ul>
+  </ul>
+</div>
+
+---
+
+# Standard Library Packages Used
+
+<div class="responsive-container">
+    <div class="fragment">
+    {{< highlight go >}}
+    - database/sql: Core database operations
+    - net/http: HTTP server and client operations
+    - html/template: HTML templating
+    - time: Time handling and formatting
+    - context: Request context management
+    - encoding/json: JSON encoding/decoding
+    - encoding/base64: Base64 encoding/decoding for cookies
+    - crypto/hmac: HMAC signatures for secure cookies
+    - crypto/sha256: SHA256 hashing for HMAC
+    - crypto/rand: Secure random number generation
+    - path/filepath: File path operations
+    - strings: String manipulation
+    - log: Logging
+    - os: File manipulation and operations
+    {{< /highlight >}}
+    </div>
+</div>
+
+
+---
+
+# External Dependencies
+
+<div class="responsive-container">
+    <div class="fragment">
+    {{< highlight go >}}
+    - github.com/joho/godotenv: For loading environment variables from .env files
+    - github.com/mattn/go-sqlite3: SQLite3 driver for Go
+    - github.com/pressly/goose/v3: Database migration tool
+    - golang.org/x/oauth2: Google OAuth2 integration
+    - tailwindcss: Frontend CSS framework (not Go related)
+    {{< /highlight >}}
+    </div>
+</div>
+
+---
+
+# Deployment
+
+<div class="responsive-container">
+    <div class="fragment">
+    {{< highlight go >}}
+    - Docker support via Dockerfile and docker-compose.yml
+    - Environment configuration via .env files
+    - Database migrations for setting up the initial schema and seed data
+    - Using for hosting a GCP VM via Compute Engine
+    - Caddy for HTTPS cert and routing
+    {{< /highlight >}}
+    </div>
+</div>
