@@ -35,3 +35,7 @@ height = "100%"
 margin = 0
 width = "100%"
 highlight_theme = "dracula"
+
+[caches]
+[caches.images]
+dir = ':cacheDir/images'
