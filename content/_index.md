@@ -284,3 +284,108 @@ templates := map[string]*template.Template{
       </ul>
   </ul>
 </div>
+
+---
+
+# Development Tools
+
+<div class="responsive-container">
+  <ul class="responsive-list">
+      <ul>
+        <li class="fragment">Migrations: Goose for database migrations
+            <div class="fragment">
+            {{< highlight go >}}
+            -- +goose Up
+            -- SQL in this section is executed when the migration is applied.
+            CREATE TABLE menu_items (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                description TEXT,
+                price REAL NOT NULL,
+                small_price REAL,
+                category TEXT NOT NULL,
+                image_url TEXT, -- Stores the relative path like /static/images/menu/image.jpg
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+
+            CREATE TABLE users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL UNIQUE,
+                password_hash TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+
+            -- +goose Down
+            -- SQL in this section is executed when the migration is rolled back.
+            DROP TABLE users;
+            DROP TABLE menu_items;
+            {{< /highlight >}}
+            </div>
+        </li>
+        <li class="fragment">Hot Reload: Air for Go hot reloading during development</li>
+        <li class="fragment">Containerization: Docker support (via Dockerfile and docker-compose.yml)</li>
+        <li class="fragment">Environment Management: godotenv for .env file loading</li>
+      </ul>
+  </ul>
+</div>
+
+---
+
+# Architecture
+
+<div class="responsive-container">
+  <ul class="responsive-list">
+    <li class="fragment">Project Structure:
+      <ul>
+        <li class="fragment">cmd/server: Main application entry point</li>
+        <li class="fragment">db: Database initialization and migrations</li>
+        <li class="fragment">internal: Core application logic separated into modules
+            <div class="fragment">
+            {{< highlight go >}}
+            - auth: Google OAuth implementation
+            - handlers: HTTP request handlers
+            - middleware: Authentication and session middleware
+            - models: Data models and database interactions
+            {{< /highlight >}}
+            </div>
+        </li>
+        <li class="fragment">static: Static assets (CSS, JavaScript, images)</li>
+        <li class="fragment">templates: HTML templates for rendering pages</li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+---
+
+# Database Schema
+
+<div class="responsive-container">
+  <ul class="responsive-list">
+      <ul>
+        <li class="fragment">menu_items: Restaurant menu items with pricing and categories</li>
+        <li class="fragment">flash_messages: Announcements/notifications to display on the website</li>
+        <li class="fragment">users: (Deprecated) Previously used for authentication, now replaced with Google OAuth</li>
+      </ul>
+  </ul>
+</div>
+
+---
+
+# Authentication Flow
+
+<div class="responsive-container">
+  <ul class="responsive-list">
+      <ul>
+        <li class="fragment">User navigates to `/login`</li>
+        <li class="fragment">User is redirected to Google OAuth login</li>
+        <li class="fragment">Google redirects back with an authorization code</li>
+        <li class="fragment">App exchanges code for a token and retrieves user info</li>
+        <li class="fragment">App validates if the user's email is in the allowed list</li>
+        <li class="fragment">Upon successful validation, a secure signed session cookie is created</li>
+        <li class="fragment">Admin routes are protected by middleware that verifies this cookie</li>
+      </ul>
+  </ul>
+</div>
