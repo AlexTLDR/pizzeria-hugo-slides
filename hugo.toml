@@ -1,0 +1,37 @@
+baseURL = 'https://example.org/'
+languageCode = 'en-us'
+title = 'Pizzeria Hugo Slides'
+theme = ["github.com/joshed-io/reveal-hugo"]
+[markup.goldmark.renderer]
+unsafe = true
+
+[markup.highlight]
+codeFences = true
+guessSyntax = false
+hl_Lines = ""
+lineNoStart = 1
+lineNos = false
+lineNumbersInTable = true
+noClasses = true
+style = "dracula"
+tabWidth = 2
+
+[outputFormats.Reveal]
+baseName = "index"
+mediaType = "text/html"
+isHTML = true
+[params.logo]
+src = "./img/stuttgart_gophers.png"
+alt = "Stuttgart Gophers Logo"
+width = "150px"
+
+[params.reveal_hugo]
+custom_css = "css/custom.css"
+slide_number = true
+center = false
+controls = true
+hash = true
+height = "100%"
+margin = 0
+width = "100%"
+highlight_theme = "dracula"

@@ -1,0 +1,42 @@
+# Hugo specific
+public/
+resources/_gen/
+.hugo_build.lock
+hugo_stats.json
+
+# Temporary files
+.DS_Store
+*.swp
+*.swo
+*~
+\#*\#
+.#*
+.*.sw*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.directory
+
+# Node.js (if you're using npm/yarn for theme development)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# IDE/Editor folders
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+.project
+.settings/
+
+# Local Netlify folder
+.netlify/
+
+# Environment variables
+.env
+.env.*
+!.env.example
