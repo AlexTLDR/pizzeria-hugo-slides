@@ -24,18 +24,17 @@ margin = 0.2
     <li class="fragment">The syntax is minimalistic and clean, inspired by C but much more readable.
       <div class="fragment">
         {{< highlight go >}}
-package main
+        package main
 
-import "fmt"
+        import "fmt"
 
-func main() {
-message := "Hello, pizza lovers!"
-fmt.Println(message)
-}
-{{< /highlight >}}
-
-</div>
-</li>
+        func main() {
+               	message := "Hello, pizza lovers!"
+               	fmt.Println(message)
+        }
+        {{< /highlight >}}
+      </div>
+    </li>
 <li class="fragment">Consistently formatted with gofmt - no style debates.</li>
 <li class="fragment">Fast compilation and execution times.</li>
 <li class="fragment">Rich Standard Library (our example with the website, HTTP servers, file I/O, JSON handling, etc) - you can build full applications without relying heavily on external dependencies</li>
@@ -69,9 +68,219 @@ fmt.Println(message)
 
 <div class="responsive-container">
   <ul class="responsive-list">
-    <li class="fragment">A Tour of Go / Ultimate Go Tour</li>
-    <li class="fragment">Go Bootcamp Master Golang with 1000+ Exercises and Projects (last updated in 2021 but still relevant)</li>
-    <li class="fragment">Boot.dev</li>
-    <li class="fragment">Ardan Labs - in-depth training</li>
+    <li class="fragment"><a href="https://go.dev/tour/" target="_blank">A Tour of Go</a> / <a href="https://tour.ardanlabs.com/" target="_blank">Ultimate Go Tour</a></li>
+    <li class="fragment"><a href="https://www.udemy.com/course/learn-go-the-complete-bootcamp-course-golang/?srsltid=AfmBOooEs-gQ7j2eN1Q_c0PqjJdz_qffJYvcui8r4MrSqxYtkBUDnCZr" target="_blank">Go Bootcamp Master Golang with 1000+ Exercises and Projects</a> (last updated in 2021 but still relevant)</li>
+    <li class="fragment"><a href="https://boot.dev/" target="_blank">Boot.dev</a></li>
+    <li class="fragment"><a href="https://www.ardanlabs.com/" target="_blank">Ardan Labs</a> - in-depth training</li>
+  </ul>
+</div>
+
+---
+
+# The Pizzeria Project: Overview
+
+<div class="responsive-container">
+  <ul class="responsive-list">
+    <li class="fragment">Backend:
+      <ul>
+        <li class="fragment">Language: Go</li>
+        <li class="fragment">Web Server: Native Go HTTP server (from `net/http` package)
+            <div class="fragment">
+            {{< highlight go >}}
+            mux := http.NewServeMux()
+            {{< /highlight >}}
+            </div>
+        </li>
+        <li class="fragment">Database: SQLite3 (file-based database)
+            <div class="fragment">
+            {{< highlight go >}}
+            db, err := sql.Open("sqlite3", dbPath)
+            if err != nil {
+                return err
+            }
+            defer db.Close()
+            {{< /highlight >}}
+            </div>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+---
+
+# Authentication: Google OAuth2
+
+<div class="responsive-container">
+  <ul class="responsive-list">
+    <li class="fragment">Google OAuth2 for admin authentication:
+      <div class="fragment">
+      {{< highlight go >}}
+func Initialize() (*OAuthConfig, error) {
+	// Load .env file
+	if err := godotenv.Load(); err != nil {
+		return nil, fmt.Errorf("error loading .env file: %w", err)
+	}
+
+	// Get Google OAuth credentials
+	clientID := os.Getenv("GOOGLE_CLIENT_ID")
+	clientSecret := os.Getenv("GOOGLE_CLIENT_SECRET")
+	redirectURL := os.Getenv("GOOGLE_REDIRECT_URL")
+
+	if clientID == "" || clientSecret == "" || redirectURL == "" {
+		return nil, errors.New("missing Google OAuth configuration in .env file")
+	}
+
+	// Get allowed emails
+	allowedEmailsStr := os.Getenv("ALLOWED_EMAILS")
+	allowedEmails := strings.Split(allowedEmailsStr, ",")
+	for i := range allowedEmails {
+		allowedEmails[i] = strings.TrimSpace(allowedEmails[i])
+	}
+
+	if len(allowedEmails) == 0 || (len(allowedEmails) == 1 && allowedEmails[0] == "") {
+		return nil, errors.New("no allowed email addresses configured in .env file")
+	}
+
+	// Create OAuth config
+	oauthConfig := &oauth2.Config{
+		ClientID:     clientID,
+		ClientSecret: clientSecret,
+		RedirectURL:  redirectURL,
+		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
+		Endpoint:     google.Endpoint,
+	}
+
+	return &OAuthConfig{
+		GoogleOAuthConfig: oauthConfig,
+		AllowedEmails:     allowedEmails,
+	}, nil
+}
+      {{< /highlight >}}
+      </div>
+    </li>
+  </ul>
+</div>
+
+---
+
+# Session Management
+
+<div class="responsive-container">
+  <ul class="responsive-list">
+    <li class="fragment">Custom implementation using secure, signed cookies for authentication:
+      <div class="fragment">
+      {{< highlight go >}}
+func SetSecureSessionCookie(w http.ResponseWriter, email string) {
+	// Current timestamp for the cookie
+	now := time.Now()
+	expires := now.Add(SessionDuration)
+
+	// Create the cookie payload: email|expiration_timestamp
+	expiresStr := strconv.FormatInt(expires.Unix(), 10)
+	payload := fmt.Sprintf("%s|%s", email, expiresStr)
+
+	// Create HMAC signature
+	h := hmac.New(sha256.New, cookieSecret)
+	h.Write([]byte(payload))
+	signature := h.Sum(nil)
+
+	// Encode the payload and signature for the cookie
+	encodedPayload := base64.URLEncoding.EncodeToString([]byte(payload))
+	encodedSignature := base64.URLEncoding.EncodeToString(signature)
+
+	// Final cookie value: base64(payload).base64(signature)
+	cookieValue := fmt.Sprintf("%s.%s", encodedPayload, encodedSignature)
+
+	// Set the cookie
+	cookie := http.Cookie{
+		Name:     SessionCookieName,
+		Value:    cookieValue,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true, // Set to true in production
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   int(SessionDuration.Seconds()),
+		Expires:  expires,
+	}
+
+	http.SetCookie(w, &cookie)
+	log.Printf("Set secure session cookie for %s, expires: %s", email, expires.Format(time.RFC3339))
+}
+      {{< /highlight >}}
+      </div>
+    </li>
+  </ul>
+</div>
+
+---
+
+# File System Operations
+
+<div class="responsive-container">
+  <ul class="responsive-list">
+    <li class="fragment">Utilizing standard `os` and `path/filepath` packages for file manipulation:
+      <div class="fragment">
+      {{< highlight go >}}
+var imageURL string
+file, header, err := r.FormFile("image_upload")
+if err == nil {
+	defer file.Close()
+
+	// Create unique filename based on timestamp
+	timestamp := time.Now().Unix()
+	filename := fmt.Sprintf("%d_%s", timestamp, header.Filename)
+
+	// Ensure filename contains only valid characters
+	filename = strings.ReplaceAll(filename, " ", "-")
+
+	// Save the file
+	filePath := filepath.Join("static", "images", "menu", filename)
+	dst, err := os.Create(filePath)
+	if err != nil {
+		m.adminError(w, r, err, http.StatusInternalServerError, "CreateMenuItem - saving image")
+		return
+	}
+	defer dst.Close()
+
+	// Copy the file content
+	_, err = dst.ReadFrom(file)
+	if err != nil {
+		m.adminError(w, r, err, http.StatusInternalServerError, "CreateMenuItem - saving image")
+		return
+	}
+
+	// Set the image URL
+	imageURL = "/" + filePath // Add leading slash for web URLs
+}
+      {{< /highlight >}}
+      </div>
+    </li>
+  </ul>
+</div>
+
+---
+
+# Frontend
+
+<div class="responsive-container">
+  <ul class="responsive-list">
+      <ul>
+        <li class="fragment">Templating: Go's built-in `html/template` package
+            <div class="fragment">
+            {{< highlight go >}}
+templates := map[string]*template.Template{
+		"index.html":           template.Must(template.New("index.html").Funcs(funcMap).ParseFiles("templates/index.html", "templates/header.html", "templates/footer.html", "templates/category-nav.html")),
+		"login.html":           template.Must(template.New("login.html").Funcs(funcMap).ParseFiles("templates/login.html")),
+		"admin-dashboard.html": template.Must(template.New("admin-dashboard.html").Funcs(funcMap).ParseFiles("templates/admin-dashboard.html")),
+		"menu-form.html":       template.Must(template.New("menu-form.html").Funcs(funcMap).ParseFiles("templates/menu-form.html")),
+}
+            {{< /highlight >}}
+            </div>
+        </li>
+        <li class="fragment">CSS Framework: Tailwind CSS V4</li>
+        <li class="fragment">JavaScript: Minimal usage via inline scripts in templates for eye candy stuff like highlighting the menu category or jumping directly to a menu category (not relevant for this topic)
+        </li>
+      </ul>
   </ul>
 </div>
