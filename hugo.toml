@@ -1,4 +1,4 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://pizzaslides.alextldr.com/'
 languageCode = 'en-us'
 title = 'Pizzeria Hugo Slides'
 theme = ["github.com/joshed-io/reveal-hugo"]
@@ -8,7 +8,6 @@ unsafe = true
 [markup.highlight]
 codeFences = true
 guessSyntax = false
-hl_Lines = ""
 lineNoStart = 1
 lineNos = false
 lineNumbersInTable = true
