@@ -271,6 +271,59 @@ if err == nil {
 
 ---
 
+# File System Operations
+
+<div class="responsive-container">
+  <ul class="responsive-list">
+    <li class="fragment">Utilizing standard `os` and `path/filepath` packages for file manipulation and guarding aginst traversal attacks:
+      <div class="fragment">
+      {{< highlight go >}}
+  var imageURL string
+
+	file, header, err := r.FormFile("image_upload")
+	if err == nil {
+		defer file.Close()
+
+		// Validate that the file is an image
+		if !m.isValidImageExtension(header.Filename) {
+			m.clientError(w, http.StatusBadRequest, "Invalid file type. Only image files (jpg, jpeg, png, gif, webp, bmp, svg) are allowed.")
+			return
+		}
+
+		// Create a completely random filename with timestamp prefix
+		timestamp := time.Now().Unix()
+		extension := filepath.Ext(header.Filename) // Get the file extension
+		randomName := fmt.Sprintf("%d_%s%s", timestamp, uuid.New().String(), extension)
+
+		// Save the file
+		filePath := filepath.Join("static", "images", "menu", randomName)
+
+		dst, err := os.Create(filePath)
+		if err != nil {
+			m.adminError(w, r, err, http.StatusInternalServerError, "CreateMenuItem - saving image")
+			return
+		}
+
+		defer dst.Close()
+
+		// Copy the file content
+		_, err = dst.ReadFrom(file)
+		if err != nil {
+			m.adminError(w, r, err, http.StatusInternalServerError, "CreateMenuItem - saving image")
+			return
+		}
+
+		// Set the image URL
+		imageURL = "/" + filePath // Add leading slash for web URLs
+	}
+      {{< /highlight >}}
+      </div>
+    </li>
+  </ul>
+</div>
+
+---
+
 # Frontend
 
 <div class="responsive-container">
