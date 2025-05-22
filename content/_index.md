@@ -49,7 +49,17 @@ margin = 0.2
 <div class="responsive-container">
   <ul class="responsive-list">
     <li class="fragment">Backwards compatible.</li>
-    <li class="fragment">Static typing (preference-based - I love this feature as it makes the code base less confusing).</li>
+    <li class="fragment">Static typing (preference-based - I love this feature as it makes the code base less confusing).<br><img src="/img/static-typing.png" alt="Static Typing" class="fragment" style="max-width: 100%;"></li>
+
+  </ul>
+</div>
+
+---
+
+# Why Go?
+
+<div class="responsive-container">
+  <ul class="responsive-list">
     <li class="fragment">Cross-Platform & Deployment-Friendly (run your program as a binary).</li>
     <li class="fragment">DevOps oriented:
       <ul>
