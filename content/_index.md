@@ -9,10 +9,13 @@ margin = 0.2
 
 {{< slide background-color="#008080" >}}
 
-<div class="title-slide">
+<div class="title-slide" style="margin-top: -50px;">
 <h1>Pizzeria App</h1>
 <h2>A Delicious Web App Journey with Go</h2>
 <p>Presented by: AlexTLDR</p>
+<div style="margin-top: 60px; display: flex; justify-content: center;">
+  <img src="/img/alex-qr-code.png" alt="AlexTLDR Website" style="max-width: 300px; width: 100%;">
+</div>
 </div>
 
 ---
