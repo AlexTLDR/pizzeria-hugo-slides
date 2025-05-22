@@ -275,7 +275,7 @@ if err == nil {
 
 <div class="responsive-container">
   <ul class="responsive-list">
-    <li class="fragment">Utilizing standard `os` and `path/filepath` packages for file manipulation and guarding aginst traversal attacks:
+    <li class="fragment">Utilizing standard `os` and `path/filepath` packages for file manipulation and guarding against traversal attacks:
       <div class="fragment">
       {{< highlight go >}}
   var imageURL string
@@ -567,5 +567,20 @@ templates := map[string]*template.Template{
     - Using for hosting a GCP VM via Compute Engine
     - Caddy for HTTPS cert and routing
     {{< /highlight >}}
+    </div>
+</div>
+
+---
+
+# Q&A
+
+<div style="display: flex; justify-content: center; align-items: center; width: 100%; gap: 80px; margin-top: 40px;">
+    <div style="text-align: center;">
+        <p style="font-size: 24px; font-weight: bold; margin-bottom: 20px;">Presentation Slides</p>
+        <img src="/img/slides-qr-code.png" alt="Slides QR Code" style="max-width: 500px; width: 100%;">
+    </div>
+    <div style="text-align: center;">
+        <p style="font-size: 24px; font-weight: bold; margin-bottom: 20px;">Pizzeria Website</p>
+        <img src="/img/pizzeria-qr-code.png" alt="Pizzeria Website QR Code" style="max-width: 500px; width: 100%;">
     </div>
 </div>
