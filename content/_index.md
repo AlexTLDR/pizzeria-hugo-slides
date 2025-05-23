@@ -580,10 +580,10 @@ templates := map[string]*template.Template{
 <div style="display: flex; justify-content: center; align-items: center; width: 100%; gap: 80px; margin-top: 40px;">
     <div style="text-align: center;">
         <p style="font-size: 24px; font-weight: bold; margin-bottom: 20px;">Presentation Slides</p>
-        <img src="/img/slides-qr-code.png" alt="Slides QR Code" style="max-width: 500px; width: 100%;">
+        <img src="/img/slides-qr-code2.png" alt="Slides QR Code" style="max-width: 500px; width: 100%;">
     </div>
     <div style="text-align: center;">
         <p style="font-size: 24px; font-weight: bold; margin-bottom: 20px;">Pizzeria Website</p>
-        <img src="/img/pizzeria-qr-code.png" alt="Pizzeria Website QR Code" style="max-width: 500px; width: 100%;">
+        <img src="/img/pizzeria-qr-code2.png" alt="Pizzeria Website QR Code" style="max-width: 500px; width: 100%;">
     </div>
 </div>
